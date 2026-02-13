@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Valentine Book</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(to right, #ffdde1, #ee9ca7);
+            font-family: Georgia, serif;
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        /* Book & Pages */
+        .book {
+            width: 600px;
+            height: 480px;
+            position: relative;
+            perspective: 2000px;
+            z-index: 10;
+        }
+
+        .page {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transform-origin: left;
+            transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+            padding: 35px;
+            box-sizing: border-box;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* Floating Bubbles Animation */
+        .bubble-container {
+            position: relative;
+            width: 100%;
+            height: 250px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .bubble {
+            position: absolute;
+            background: rgba(255, 182, 193, 0.7);
+            border: 2px solid #ff4b6e;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.2s;
+            font-size: 11px;
+            font-weight: bold;
+            color: #b91d56;
+            padding: 5px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            animation: drift 4s ease-in-out infinite;
+        }
+
+        @keyframes drift {
+
+            0%,
+            100% {
+                transform: translateY(0) translateX(0);
+            }
+
+            50% {
+                transform: translateY(-10px) translateX(5px);
+            }
+        }
+
+        /* Pulsing Glow for Titles */
+        .glow {
+            animation: glowText 2s ease-in-out infinite;
+        }
+
+        @keyframes glowText {
+
+            0%,
+            100% {
+                text-shadow: 0 0 5px #fff, 0 0 10px #ff4b6e;
+            }
+
+            50% {
+                text-shadow: 0 0 10px #fff, 0 0 20px #ff4b6e;
+            }
+        }
+
+        /* Scratch-Off */
+        .scratch-container {
+            position: relative;
+            width: 300px;
+            height: 150px;
+            margin-top: 10px;
+            border: 4px solid #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        #scratch-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            cursor: crosshair;
+            border-radius: 10px;
+            touch-action: none;
+        }
+
+        .hidden-message {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #fff0f3;
+            border-radius: 10px;
+            font-size: 22px;
+            color: #ff4b6e;
+            font-weight: bold;
+        }
+
+        /* Surprise Animation */
+        #surprise-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .floating-final-heart {
+            position: absolute;
+            font-size: 30px;
+            animation: flyUp 3s linear forwards;
+        }
+
+        @keyframes flyUp {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-10vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Controls & Button Animation */
+        .controls {
+            position: absolute;
+            bottom: -70px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .btn-next {
+            animation: heartbeat 2s infinite;
+        }
+
+        @keyframes heartbeat {
+            0% {
+                transform: scale(1);
+            }
+
+            10% {
+                transform: scale(1.05);
+            }
+
+            20% {
+                transform: scale(1);
+            }
+
+            30% {
+                transform: scale(1.05);
+            }
+
+            40% {
+                transform: scale(1);
+            }
+        }
+
+        button {
+            background: #ff4b6e;
+            color: white;
+            padding: 12px 28px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 75, 110, 0.3);
+        }
+
+        button:hover {
+            background: #b91d56;
+            transform: scale(1.1) !important;
+        }
+
+        p {
+            line-height: 1.5;
+            color: #444;
+        }
+
+        h1 {
+            color: #b91d56;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="surprise-container"></div>
+
+    <div class="book" id="book">
+        <div class="page">
+            <h1 class="glow" style="font-size: 40px;">HELLO MY LOVE! 💌</h1>
+            <p style="font-style: italic; color: #ff4b6e;">(Can you please smile before you open this? hehe :3)</p>
+            <p>A little something for someone very special—YOU!</p>
+        </div>
+
+        <div class="page">
+            <h1 style="font-size: 24px;">To the Love of My Life 💖</h1>
+            <p style="font-size: 14px;">From the moment we met, you've changed my world in the best way possible. You've
+                shown me what true love looks like—from the way you take good care of me physically, you proved to me
+                that we are more than our late-night VCs, and that we are at our best when we are together. You'll never
+                know how much you healed every single part of me. I started loving myself more because of you, and
+                having you in my life gave me the realization that I don't need to be perfect. I just need someone who
+                can see me as an imperfect person and love me at my worst, and you did all of that. Swerteng Kumag
+                Nganiii?</p>
+        </div>
+
+        <div class="page">
+            <h1 style="font-size: 22px;">To The Missing Semi-Colon In My Code Full of Errors 💌</h1>
+            <p style="font-size: 14px;">Your smile is my favorite sunrise and your laugh is my favorite melody. I
+                learned to love every single piece that completes you. You're the missing semi-colon that every
+                programmer misses; it may look like a single character, but it has a significant purpose. You completed
+                my life, you fixed my bugs, and most importantly, you helped me find my purpose.</p>
+        </div>
+
+        <div class="page">
+            <h3 class="glow">Reasons Why I Love You 🫧</h3>
+            <p style="font-size: 12px;">(Pop every bubble!)</p>
+            <div class="bubble-container" id="bubble-box"></div>
+        </div>
+
+        <div class="page">
+            <h1>My Promise ❤️</h1>
+            <p style="font-size: 14px;">I promise to love you in every season and hold your hand through every storm.
+                We've faced too many struggles, we've surfed too many waves, and we've ridden through roads full of
+                obstacles together. This is a testament to our willingness to be with each other regardless of the
+                seasons. Truly, you are a treasure that'll last a lifetime. I will always be there for you, no matter
+                what.</p>
+        </div>
+
+        <div class="page">
+            <h1 class="glow">A Secret Question... 🕵️‍♂️</h1>
+            <div class="scratch-container">
+                <div class="hidden-message">Will you be my Valentine? 🌹</div>
+                <canvas id="scratch-canvas" width="300" height="150"></canvas>
+            </div>
+            <p style="font-size: 14px; margin-top: 15px;">Scratch mo yung box pogi!</p>
+        </div>
+
+        <div class="page">
+            <h1 id="pulse-heart" style="font-size: 50px; margin: 0; animation: heartbeat 1.5s infinite;">❤️</h1>
+            <h1 class="glow" style="font-size: 22px;">HAPPY VALENTINE'S DAY, MY DWIN! 💘</h1>
+            <p style="font-size: 13px;">No matter where life takes us, I will always choose you. This is just the
+                beginning of a lifelong journey. We will face more storms, we will watch each other stumble and grow, we
+                will share songs, play more games, cook more meals, and travel to more places. We will reach our dreams
+                together—you will get that RN and I will get that job. Everything will happen because we want it to!
+                Happy Valentine's Day, my constant, my medisina, my lia, my bawat piyesa, my sure thing, MY EVERYTHING!
+            </p>
+        </div>
+
+        <div class="controls">
+            <button onclick="prevPage()">⬅ Back</button>
+            <button class="btn-next" onclick="nextPage()">Next ➜</button>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 0;
+        const pages = document.querySelectorAll(".page");
+
+        function updatePages() {
+            pages.forEach((page, index) => {
+                page.style.zIndex = pages.length - index;
+                if (index < currentPage) {
+                    page.style.transform = "rotateY(-180deg)";
+                    page.style.boxShadow = "none";
+                } else {
+                    page.style.transform = "rotateY(0deg)";
+                    page.style.boxShadow = "0 10px 30px rgba(0, 0, 0, 0.2)";
+                }
+            });
+            if (currentPage === 5) setTimeout(initScratch, 500);
+            if (currentPage === 6) launchFinalSurprise();
+        }
+
+        function nextPage() { if (currentPage < pages.length - 1) { currentPage++; updatePages(); } }
+        function prevPage() { if (currentPage > 0) { currentPage--; updatePages(); } }
+
+        const reasons = ["Your Cuteness", "Your eyes", "Your jokes", "How you care", "Your strength", "Your heart", "How you know me", "You calm me", "Craving my presence", "How you assure me", "Your kisses hehe", "Caressing my hair", "Your hugs", "Your intelligence", "Your support"];
+        const bubbleBox = document.getElementById('bubble-box');
+
+        reasons.forEach((text, i) => {
+            const b = document.createElement('div');
+            b.className = 'bubble';
+            b.innerText = text;
+            const size = Math.random() * 40 + 65;
+            b.style.width = size + 'px';
+            b.style.height = size + 'px';
+            b.style.left = Math.random() * 75 + '%';
+            b.style.top = Math.random() * 70 + '%';
+            // Staggered animation delay for drift
+            b.style.animationDelay = (i * 0.2) + 's';
+
+            b.onclick = () => {
+                b.style.transform = 'scale(1.5)';
+                b.style.opacity = '0';
+                setTimeout(() => b.remove(), 250);
+            };
+            bubbleBox.appendChild(b);
+        });
+
+        let scratchInitialized = false;
+        function initScratch() {
+            if (scratchInitialized) return;
+            const canvas = document.getElementById('scratch-canvas');
+            const ctx = canvas.getContext('2d');
+            let isDrawing = false;
+            ctx.fillStyle = '#C0C0C0';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#666';
+            ctx.font = "bold 18px Arial";
+            ctx.fillText("SCRATCH ME", 85, 80);
+
+            function scratch(e) {
+                if (!isDrawing) return;
+                const rect = canvas.getBoundingClientRect();
+                const x = (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left;
+                const y = (e.clientY || (e.touches && e.touches[0].clientY)) - rect.top;
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.beginPath();
+                ctx.arc(x, y, 25, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            canvas.onmousedown = () => isDrawing = true;
+            canvas.ontouchstart = () => isDrawing = true;
+            window.onmouseup = () => isDrawing = false;
+            window.ontouchend = () => isDrawing = false;
+            canvas.onmousemove = scratch;
+            canvas.ontouchmove = (e) => { e.preventDefault(); scratch(e); };
+            scratchInitialized = true;
+        }
+
+        function launchFinalSurprise() {
+            const container = document.getElementById('surprise-container');
+            for (let i = 0; i < 100; i++) {
+                setTimeout(() => {
+                    const h = document.createElement('div');
+                    h.className = 'floating-final-heart';
+                    h.innerHTML = ['❤️', '💖', '🌸', '✨', '💘'][Math.floor(Math.random() * 5)];
+                    h.style.left = Math.random() * 100 + 'vw';
+                    h.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    container.appendChild(h);
+                    setTimeout(() => h.remove(), 4000);
+                }, i * 50);
+            }
+        }
+        updatePages();
+    </script>
+</body>
+
+</html>
